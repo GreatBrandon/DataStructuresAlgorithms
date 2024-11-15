@@ -9,8 +9,8 @@ public class WeightedGraph extends Graph{
     }
 
     public void addEdge(int node1, int node2, int weight) {
-        if (weight <= 0) {
-            throw new IllegalArgumentException("Weight cannot be 0 or less!");
+        if (weight == 0) {
+            throw new IllegalArgumentException("Weight cannot be 0! Use removeEdge instead to remove an edge");
         }
         getAdjacencyMatrix()[node1][node2] = weight;
         if (!isDirected()) {
@@ -50,8 +50,7 @@ public class WeightedGraph extends Graph{
 
     @Override
     public void importEdgeList(int[][] el) {
-        int rows = el.length;
-        for (int i = 0; i < rows; i++) {
+        for (int i = 0; i < el.length; i++) {
             if (el[i].length != 3) {
                 throw new IllegalArgumentException("Each row in weighted edge list array must have exactly 3 elements!");
             }

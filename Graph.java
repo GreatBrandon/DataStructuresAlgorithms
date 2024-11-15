@@ -263,9 +263,7 @@ public class Graph {
     }
 
     public void importEdgeList(int[][] el) {
-        int rows = el.length;
-
-        for (int i = 0; i < rows; i++) {
+        for (int i = 0; i < el.length; i++) {
             if (el[i].length != 2) {
                 throw new IllegalArgumentException("Each row in edge list array must have exactly 2 elements!");
             }

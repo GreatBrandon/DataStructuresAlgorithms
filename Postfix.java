@@ -1,30 +1,7 @@
 import java.util.Stack;
 
 public class Postfix {
-    public static void main(String[] args) {
-        // System.out.println(toPostfix("10+5"));
-        // evaluatePostfix("70 50 * 3 - 9 8 + /");
-        // evaluatePostfix("7 26 3 / +");
-
-        // String infix = "(10.5+10.5)*2";
-
-        // System.out.println(.1*.1);
-        // System.out.println(toPostfix("10+10"));
-
-        // System.out.println(toPostfix(infix));
-        // System.out.println(toPostfix("2 * ( 10.5 + 10.5 ) "));
-        // System.out.println(evaluatePostfix(toPostfix(infix)));
-
-        String infix = "7.0 8.0 -( 2+3 -)";
-        System.out.println(toPostfix(infix));
-        System.out.println(evaluatePostfix(toPostfix(infix)));
-
-        // String infix = "(5+25) /2*5-5";
-        // System.out.println(toPostfix(infix));
-        // System.out.println(evaluatePostfix(toPostfix(infix)));
-        // double result = 7.0  8.0 -( 2+3 -);
-    }
-
+    // when entering any infix expression, make sure there is NO SPACES in the infix otherwise stuff like this: "7.0  8.0 -( 2+3 -)" will work when it shouldn't, removing spaces seems to solve the problem
     public static String toPostfix(String infix) {
         Stack<Character> s = new Stack<>();
         String postfix = "";
@@ -52,10 +29,7 @@ public class Postfix {
                 }
                 s.push(c);
                 postfix += " ";
-            } else if (c == ' ') {
-                // postfix = postfix.trim();
-                // postfix += " ";
-            } 
+            }
         }
         while (!s.isEmpty()) {
             postfix += " " + s.pop();
