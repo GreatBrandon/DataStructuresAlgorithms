@@ -229,7 +229,9 @@ public class Graph {
     }
 
     public void printGraph() {
-        System.out.println(Arrays.deepToString(am));
+        for(int i = 0; i < am.length; i++) {
+            System.out.println(Arrays.toString(am[i]));
+        }
     }
 
     public boolean isDirected() {

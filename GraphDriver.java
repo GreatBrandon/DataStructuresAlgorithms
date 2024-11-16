@@ -98,12 +98,31 @@ public class GraphDriver {
             {0,2, 40},
             {0,3, 50},
             {1,2, 25},
-            {3,4, 35}
+            {3,4, 35},
+            {1,3, 25},
+            {0,4, 50}
         };
+        int [][] el3 = {
+            {0,1,6},
+            {0,2,1},
+            {0,3,5},
+            {1,2,5},
+            {1,4,3},
+            {2,3,5},
+            {2,4,6},
+            {2,5,4},
+            {3,5,2},
+            {4,5,6}
+        }; // sample graph from lectures
+
         WeightedGraph wg2 = new WeightedGraph(false);
-        wg2.importEdgeList(el2);
+        wg2.importEdgeList(el3);
         wg2.printGraph();
-        wg2.addEdge(0, 1);
+        // wg2.addEdge(0, 1); // should throw error
         System.out.println(Arrays.deepToString(wg2.getEdgeList()));
+
+        // WeightedGraph kruskal = wg2.kruskalMST();
+        // System.out.println(kruskal.getEdgeCount());
+        // System.out.println(Arrays.deepToString(kruskal.getEdgeList()));
     }
 }
