@@ -45,7 +45,7 @@ public class Postfix {
                 if (Character.isDigit(c) || c == '.') {
                     currentNo+= c;
                 } else if (c == ' ') {
-                    if (currentNo != "") {
+                    if (!currentNo.isEmpty()) {
                         try {
                             s.push(Double.parseDouble(currentNo));
                             currentNo = "";

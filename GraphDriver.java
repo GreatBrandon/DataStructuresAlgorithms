@@ -124,5 +124,9 @@ public class GraphDriver {
         // WeightedGraph kruskal = wg2.kruskalMST();
         // System.out.println(kruskal.getEdgeCount());
         // System.out.println(Arrays.deepToString(kruskal.getEdgeList()));
+
+        WeightedGraph prim = wg2.primMST();
+        System.out.println(prim.getEdgeCount());
+        System.out.println(Arrays.deepToString(prim.getEdgeList()));
     }
 }

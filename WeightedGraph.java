@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.Comparator;
 
 public class WeightedGraph extends Graph{
 
@@ -52,52 +53,36 @@ public class WeightedGraph extends Graph{
 
     @Override
     public void importEdgeList(int[][] el) {
-        for (int i = 0; i < el.length; i++) {
-            if (el[i].length != 3) {
+        for (int[] row : el) {
+            if (row.length != 3) {
                 throw new IllegalArgumentException("Each row in weighted edge list array must have exactly 3 elements!");
             }
         }
-        int[] nodes = new int[el.length*2];
-        int count = 0;
-        boolean unique;
+        int count = super.getNodeCount(el);
 
-        for (int col = 0; col < 2; col++) { // loops through both columns of edge list
-            for (int row = 0; row < el.length; row++) { // loops through every entry
-                unique = true;
-                for (int k = 0; k < count; k++) { // loops through already found nodes to check is it unique
-                    if (nodes[k] == el[row][col]) {
-                        unique = false;
-                    }
-                }
-                if (unique) {
-                    nodes[count] = el[row][col];
-                    count++;
-                }
-            }
-        }
-
-        int [][] am = new int[count][count]; // initialise adjancy matrix with all 0
+        int [][] am = new int[count][count]; // initialise adjacency matrix with all 0
         for (int i = 0; i < am.length; i++) {
             for (int j = 0; j < am.length; j++) {
                 am[i][j] = 0;
             }
         }
 
-        for (int i = 0; i < el.length; i++) {
-            am[el[i][0]][el[i][1]] = el[i][2];
+        for (int[] row : el) {
+            am[row[0]][row[1]] = row[2];
             if (!isDirected()) {
-                am[el[i][1]][el[i][0]] = el[i][2];
+                am[row[1]][row[0]] = row[2];
             }
         }
         importAdjacencyMatrix(am);
     }
 
-    private WeightedGraph kruskalMST() {  // work in progress, algorithm fails when connecting 2 edges from 2 separate trees during the process
+    public WeightedGraph kruskalMST() {  // work in progress, algorithm fails when connecting 2 edges from 2 separate trees during the process
         WeightedGraph kruskal = new WeightedGraph(isDirected());
 
         int[][] el = getEdgeList(); // gets edge list
-        Arrays.sort(el, (a,b) -> a[2]-b[2]); // sort edge list by weight in ascending order
-        int currentEdge = 0; // position of current egde in edge list
+        Arrays.sort(el, Comparator.comparingInt(a -> a[2])); // sort edge list by weight in ascending order
+
+        int currentEdge = 0; // position of current edge in edge list
 
         int[][] edges = new int[getNodeCount()-1][3]; // edges to be in MST graph
         int edgeCount = 0; // amount of edges contained in above array
@@ -144,5 +129,56 @@ public class WeightedGraph extends Graph{
 
         kruskal.importEdgeList(edges);
         return kruskal;
+    }
+
+    public WeightedGraph primMST() {
+        return primMST(0);
+    }
+
+    public WeightedGraph primMST(int startNode) {
+        WeightedGraph prim = new WeightedGraph(isDirected());
+
+        int[][] edges = new int[getNodeCount()-1][3]; // edges to be in MST graph
+        int edgeCount = 0; // amount of edges contained in above array
+
+        int[] visitedNodes = new int[getNodeCount()]; // nodes already visited, used to check for loops
+        visitedNodes[0] = startNode;
+        int nodeCount = 1;
+
+        int[][] am = getAdjacencyMatrix();
+
+        while(edgeCount < getNodeCount()-1) {
+            int smallestEdge = 0;
+            int node1 = -1;
+            int node2 = -1;
+
+            for(int i = 0; i < nodeCount; i++) { // for each node already visited
+                for (int j = 0; j < am.length; j++) {
+                    if (am[visitedNodes[i]][j] != 0) { // if edge exists
+                        boolean visited = false;
+                        for (int k = 0; k < nodeCount; k++) { // check for loops
+                            if (visitedNodes[k] == j) {
+                                visited = true;
+                                break;
+                            }
+                        }
+                        if (!visited && (smallestEdge == 0 || am[visitedNodes[i]][j] < smallestEdge)) { // check is it the smallest edge that hasn't been visited yet
+                            smallestEdge = am[visitedNodes[i]][j];
+                            node1 = visitedNodes[i];
+                            node2 = j;
+                        }
+                    }
+                }
+            }
+
+            edges[edgeCount][0] = node1;
+            edges[edgeCount][1] = node2;
+            edges[edgeCount][2] = smallestEdge;
+            edgeCount++;
+            visitedNodes[nodeCount] = node2;
+            nodeCount++;
+        }
+        prim.importEdgeList(edges);
+        return prim;
     }
 }

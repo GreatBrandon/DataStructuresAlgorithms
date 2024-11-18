@@ -5,8 +5,8 @@ import java.util.Stack;
 
 public class Graph {
     private int[][] am;
-    private boolean directed;
-    private static char[] alphabet = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
+    private final boolean directed;
+    private static final char[] alphabet = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
     
     public Graph(boolean directed) { // initialise empty graph adjacency matrix
         this(new int[0][0], directed);
@@ -18,7 +18,7 @@ public class Graph {
         this.directed = directed;
     }
 
-    public String depthFirstSearch(int startIndex) { // Depth first search is implemented by always going to the next smallest lettered node in the case of a choice (eg choose b or c, program will choose b first and go down that path)
+    public String depthFirstSearch(int startIndex) { // Depth first search is implemented by always going to the next smallest lettered node in the case of a choice (e.g. choose b or c, program will choose b first and go down that path)
         Stack<Integer> s = new Stack<>(); // stack of node indices, not node values
         int visitedCount = 0;
         String path = "";
@@ -38,7 +38,7 @@ public class Graph {
                 path += currentNode+", ";
             }
 
-            for (int i = am.length-1; i >= 0; i--) { // need to loop from largets to smallest to pop smallet to largest out of the stack
+            for (int i = am.length-1; i >= 0; i--) { // need to loop from largest to smallest to pop smallest to the largest out of the stack
                 if (am[currentNode][i] != 0 && !visited[i]) {
                     s.push(i);
                 }
@@ -129,9 +129,9 @@ public class Graph {
 
     public int getEdgeCount() {
         int count = 0;
-        for (int i = 0; i < am.length; i++) {
+        for (int[] row : am) {
             for (int j = 0; j < am.length; j++) {
-                if (am[i][j] != 0) {
+                if (row[j] != 0) {
                     count++;
                 }
             }
@@ -143,22 +143,14 @@ public class Graph {
         }
     }
 
-    public boolean edgeExists(int node1, int node2) {
+    public boolean edgeExists(int node1, int node2) { // TODO: testing
         if (am[node1][node2] != 0) {
             return true;
-        } else if (am[node2][node1] != 0 && !directed) {
-            return true;
-        } else {
-            return false;
-        }
+        } else return am[node2][node1] != 0 && !directed;
     }
 
     public boolean nodeExists(int node) {
-        if (node < am.length) {
-            return true;
-        } else {
-            return false;
-        }
+        return node < am.length;
     }
 
     public void addEdge(int node1, int node2) {
@@ -229,8 +221,8 @@ public class Graph {
     }
 
     public void printGraph() {
-        for(int i = 0; i < am.length; i++) {
-            System.out.println(Arrays.toString(am[i]));
+        for (int[] row : am) {
+            System.out.println(Arrays.toString(row));
         }
     }
 
@@ -265,43 +257,49 @@ public class Graph {
     }
 
     public void importEdgeList(int[][] el) {
-        for (int i = 0; i < el.length; i++) {
-            if (el[i].length != 2) {
+        for (int[] row : el) {
+            if (row.length != 2) {
                 throw new IllegalArgumentException("Each row in edge list array must have exactly 2 elements!");
             }
         }
-        int[] nodes = new int[el.length*2];
-        int count = 0;
-        boolean unique;
+        int count = getNodeCount(el);
 
-        for (int col = 0; col < 2; col++) { // loops through both columns of edge list
-            for (int row = 0; row < el.length; row++) { // loops through every entry
-                unique = true;
-                for (int k = 0; k < count; k++) { // loops through already found nodes to check is it unique
-                    if (nodes[k] == el[row][col]) {
-                        unique = false;
-                    }
-                }
-                if (unique) {
-                    nodes[count] = el[row][col];
-                    count++;
-                }
-            }
-        }
-
-        this.am = new int[count][count]; // initialise adjancy matrix with all 0
+        this.am = new int[count][count]; // initialise adjacency matrix with all 0
         for (int i = 0; i < am.length; i++) {
             for (int j = 0; j < am.length; j++) {
                 am[i][j] = 0;
             }
         }
 
-        for (int i = 0; i < el.length; i++) {
-            am[el[i][0]][el[i][1]] = 1;
+        for (int[] row : el) {
+            am[row[0]][row[1]] = 1;
             if (!directed) {
-                am[el[i][1]][el[i][0]] = 1;
+                am[row[1]][row[0]] = 1;
             }
         }
+    }
+
+    public int getNodeCount(int[][] el) {
+        int[] nodes = new int[el.length*2];
+        int count = 0;
+        boolean unique;
+
+        for (int col = 0; col < 2; col++) { // loops through both columns of edge list
+            for (int[] row : el) { // loops through every entry
+                unique = true;
+                for (int k = 0; k < count; k++) { // loops through already found nodes to check is it unique
+                    if (nodes[k] == row[col]) {
+                        unique = false;
+                        break;
+                    }
+                }
+                if (unique) {
+                    nodes[count] = row[col];
+                    count++;
+                }
+            }
+        }
+        return count;
     }
 
     public void importAdjacencyMatrix(int [][] am) {
@@ -311,8 +309,8 @@ public class Graph {
 
     private void isValid(int[][] am) {
         int rows = am.length;
-        for (int i = 0; i < rows; i++) {
-            if (am[i].length != rows) {
+        for (int[] row : am) {
+            if (row.length != rows) {
                 throw new IllegalArgumentException("Adjacency matrix array must be square!");
             }
         }
