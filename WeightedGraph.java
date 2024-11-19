@@ -76,6 +76,10 @@ public class WeightedGraph extends Graph{
         importAdjacencyMatrix(am);
     }
 
+    public int getEdge(int node1, int node2) {
+        return getAdjacencyMatrix()[node1][node2];
+    }
+
     public WeightedGraph kruskalMST() {  // work in progress, algorithm fails when connecting 2 edges from 2 separate trees during the process
         WeightedGraph kruskal = new WeightedGraph(isDirected());
 
@@ -180,5 +184,55 @@ public class WeightedGraph extends Graph{
         }
         prim.importEdgeList(edges);
         return prim;
+    }
+
+    public int dijkstra(int start, int end) {
+        int[] distances = new int[getNodeCount()];
+        int[] nodes = new int[getNodeCount()];
+
+        for (int i = 0; i < distances.length; i++) {
+            distances[i] = Integer.MAX_VALUE; 
+            nodes[i] = i;
+        }
+        distances[start] = 0;
+
+        while (nodes.length > 0) {
+            int minimum = Integer.MAX_VALUE;
+            int minNode = -1;
+            int minNodeIndex = -1;
+            for (int i = 0; i < nodes.length; i++) { // get node in nodes with lowest distance
+                if (distances[nodes[i]] < minimum) {
+                    minimum = distances[nodes[i]];
+                    minNode = nodes[i];
+                    minNodeIndex = i;
+                }
+            }
+            int[] tempNodes = new int[nodes.length-1];
+            for (int i = 0; i < tempNodes.length; i++) { // remove chosen node from nodes
+                if (i < minNodeIndex) {
+                    tempNodes[i] = nodes[i];
+                } else {
+                    tempNodes[i] = nodes[i+1];
+                }
+            }
+            nodes = tempNodes;
+
+            for (int i = 0; i < nodes.length; i++) { // for each node adjacent to current one, compare distance and update lower one
+                // if (edgeExists(minNode, nodes[i])) {
+                //     if (distances[nodes[i]] > distances[minNode] + getEdge(minNode,i)) {
+                //         distances[nodes[i]] = distances[minNode] + getEdge(minNode,i);
+                //     }
+                // }
+
+                if (edgeExists(minNode, nodes[i])) {
+                    if (distances[nodes[i]] > distances[minNode] + getEdge(minNode, nodes[i])) {
+                        distances[nodes[i]] = distances[minNode] + getEdge(minNode, nodes[i]);
+                    }
+                }
+            }
+        }
+        System.out.println(Arrays.toString(distances));
+
+        return distances[end];
     }
 }

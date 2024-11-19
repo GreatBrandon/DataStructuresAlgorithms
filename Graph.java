@@ -183,7 +183,7 @@ public class Graph {
         this.am = temp;
     }
 
-    public void removeNode(int node) {
+    public void removeNode(int node) { // TODO: test removing node index 0, could crash 
         int [][] temp = new int[am.length-1][am.length-1];
 
         for (int i = 0; i < am.length; i++){

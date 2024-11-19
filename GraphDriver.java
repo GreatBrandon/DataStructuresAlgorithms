@@ -117,16 +117,18 @@ public class GraphDriver {
 
         WeightedGraph wg2 = new WeightedGraph(false);
         wg2.importEdgeList(el3);
-        wg2.printGraph();
+        // wg2.printGraph();
         // wg2.addEdge(0, 1); // should throw error
-        System.out.println(Arrays.deepToString(wg2.getEdgeList()));
+        // System.out.println(Arrays.deepToString(wg2.getEdgeList()));
 
         // WeightedGraph kruskal = wg2.kruskalMST();
         // System.out.println(kruskal.getEdgeCount());
         // System.out.println(Arrays.deepToString(kruskal.getEdgeList()));
 
-        WeightedGraph prim = wg2.primMST();
-        System.out.println(prim.getEdgeCount());
-        System.out.println(Arrays.deepToString(prim.getEdgeList()));
+        // WeightedGraph prim = wg2.primMST();
+        // System.out.println(prim.getEdgeCount());
+        // System.out.println(Arrays.deepToString(prim.getEdgeList()));
+
+        System.out.println(wg2.dijkstra(0,4));
     }
 }
