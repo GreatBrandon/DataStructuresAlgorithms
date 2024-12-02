@@ -115,9 +115,22 @@ public class GraphDriver {
             {4,5,6}
         }; // sample graph from lectures
 
+        int [][] map = {
+            {0,1,11},
+            {1,2,1},
+            {2,3,4},
+            {3,4,10},
+            {3,5,7},
+            {5,6,2},
+            {5,7,6},
+            {6,7,7},
+            {5,8,7},
+            {1,8,6}
+        };
+
         WeightedGraph wg2 = new WeightedGraph(false);
-        wg2.importEdgeList(el3);
-        // wg2.printGraph();
+        wg2.importEdgeList(map);
+        wg2.printGraph();
         // wg2.addEdge(0, 1); // should throw error
         // System.out.println(Arrays.deepToString(wg2.getEdgeList()));
 
@@ -129,6 +142,6 @@ public class GraphDriver {
         // System.out.println(prim.getEdgeCount());
         // System.out.println(Arrays.deepToString(prim.getEdgeList()));
 
-        System.out.println(wg2.dijkstra(0,4));
+        // System.out.println(wg2.dijkstra(0,4));
     }
 }
